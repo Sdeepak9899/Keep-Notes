@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
 
 export default function InputAreaBox() {
+  let localStoredNotes;
   const [inputTitle, setInputTitle] = useState("");
   const [inputText, setInputText] = useState("");
-  const [notes, setNotes] = useState([]);
+  if (typeof window !== "undefined") {
+    localStoredNotes = JSON.parse(localStorage.getItem("notes")) || [];
+  }
+  let [notes, setNotes] = useState(localStoredNotes);
   const [isEditing, setIsEditing] = useState(false);
   const [tempData, setTempData] = useState(null);
 
@@ -38,11 +44,17 @@ export default function InputAreaBox() {
     setNotes(notes.filter((_, i) => i !== index));
   };
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      window.localStorage.setItem("notes", JSON.stringify(notes));
+    }
+  }, [notes]);
+
   return (
-    <div className="bg-white p-4">
+    <div className=" p-4">
       <form
         onSubmit={addData}
-        className="relative max-w-lg mx-auto my-8 bg-white p-4 shadow-md rounded-lg w-full"
+        className="relative max-w-lg mx-auto my-8  p-4 shadow-md rounded-lg w-full"
       >
         <input
           type="text"
@@ -81,11 +93,13 @@ export default function InputAreaBox() {
       <div className="flex flex-wrap justify- gap-4">
         {notes.map((note, index) => (
           <div
-            className="bg-white w-full sm:w-60 rounded-lg shadow-lg p-4 hover:shadow-xl transition"
+            className="border border-amber-300 w-full sm:w-60 rounded-lg shadow-lg p-4 hover:shadow-xl transition"
             key={index}
           >
             <h1 className="text-base font-semibold">{note.title}</h1>
-            <p className="text-base mt-2 whitespace-pre-wrap break-words">{note.text}</p>
+            <p className="text-base mt-2 whitespace-pre-wrap break-words">
+              {note.text}
+            </p>
             <div className="flex justify-between mt-2 px-8">
               <button
                 className="text-blue-500 hover:underline"
