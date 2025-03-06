@@ -91,7 +91,7 @@ export default function InputAreaBox() {
       </form>
 
       <div className="flex flex-wrap justify- gap-4">
-        {notes.map((note, index) => (
+        {notes && notes.length > 0 && notes.map((note, index) => (
           <div
             className="border border-amber-300 w-full sm:w-60 rounded-lg shadow-lg p-4 hover:shadow-xl transition"
             key={index}
